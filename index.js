@@ -2,14 +2,15 @@ const fetch = require('node-fetch');
 var randomize = require('randomatic')
 var random = require('random-name')
 const fs = require('fs-extra');
+const readlineSync = require('readline-sync');
 
-const functionRegist = (email) => new Promise((resolve, reject) => {
+const functionRegist = (email, reff) => new Promise((resolve, reject) => {
     const bodys = {
         area: "+86",
         phone: email,
         password: "japro908",
         repassword: "japro908",
-        invite_code: "BIFRY192Z",
+        invite_code: reff,
         agree: true
         }
     
@@ -39,11 +40,14 @@ const functionRegist = (email) => new Promise((resolve, reject) => {
   });
 
 (async () => {
+    const reff = readlineSync.question('[?] Reff: ')
+    const jumlah = readlineSync.question('[?] Jumlah: ')
+    for (var i = 0; i < jumlah; i++){
     try {
         const rand = randomize('0', 5)
         const name = random.first()
         const email = `${name}${rand}@gmail.com`
-        const regist = await functionRegist(email)
+        const regist = await functionRegist(email, reff)
         if(regist.message == 'Success'){
             console.log('[+] Regist sukses !')
             await fs.appendFile('pampAccount.txt', email+'\r\n', err => {
@@ -55,4 +59,5 @@ const functionRegist = (email) => new Promise((resolve, reject) => {
     } catch (e) {
         console.log(e)
     }
+}
 })()
